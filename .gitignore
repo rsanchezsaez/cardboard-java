@@ -33,3 +33,5 @@ local.properties
 *.swp
 
 .DS_Store
+
+.history
