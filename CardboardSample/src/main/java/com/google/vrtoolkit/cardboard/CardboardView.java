@@ -495,7 +495,7 @@ public class CardboardView extends GLSurfaceView
             final ScreenParams screen = this.mHmd.getScreenParams();
             if (width != screen.getWidth() || height != screen.getHeight()) {
                 if (!this.mInvalidSurfaceSize) {
-                    GLES20.glClear(16384);
+                    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                     Log.w("CardboardView", new StringBuilder(124).append("Surface size ").append(width).append("x").append(height).append(" does not match the expected screen size ").append(screen.getWidth()).append("x").append(screen.getHeight()).append(". Rendering is disabled.").toString());
                 }
                 this.mInvalidSurfaceSize = true;
@@ -599,7 +599,7 @@ public class CardboardView extends GLSurfaceView
         @Override
         public void onDrawFrame(final HeadTransform head, final Eye leftEye, final Eye rightEye) {
             this.mStereoRenderer.onNewFrame(head);
-            GLES20.glEnable(3089);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
             leftEye.getViewport().setGLViewport();
             leftEye.getViewport().setGLScissor();
             this.mStereoRenderer.onDrawEye(leftEye);

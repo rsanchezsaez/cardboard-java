@@ -44,8 +44,8 @@ public class DistortionRenderer
         this.mRenderbufferId = -1;
         this.mFramebufferId = -1;
         this.mOriginalFramebufferId = IntBuffer.allocate(1);
-        this.mTextureFormat = 6407;
-        this.mTextureType = 5121;
+        this.mTextureFormat = GLES20.GL_RGB;
+        this.mTextureType = GLES20.GL_NEVER1;
         this.mResolutionScale = 1.0f;
         this.mGLStateBackup = new GLStateBackup();
         this.mGLStateBackupAberration = new GLStateBackup();
@@ -67,12 +67,12 @@ public class DistortionRenderer
         if (this.mFovsChanged || this.mTextureFormatChanged) {
             this.updateTextureAndDistortionMesh();
         }
-        GLES20.glGetIntegerv(36006, this.mOriginalFramebufferId);
-        GLES20.glBindFramebuffer(36160, this.mFramebufferId);
+        GLES20.glGetIntegerv(GLES20.GL_FRAMEBUFFER_BINDING, this.mOriginalFramebufferId);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFramebufferId);
     }
     
     public void afterDrawFrame() {
-        GLES20.glBindFramebuffer(36160, this.mOriginalFramebufferId.array()[0]);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mOriginalFramebufferId.array()[0]);
         this.undistortTexture(this.mTextureId);
         this.mDrawingFrame = false;
     }
@@ -90,8 +90,8 @@ public class DistortionRenderer
             this.updateTextureAndDistortionMesh();
         }
         GLES20.glViewport(0, 0, this.mHmd.getScreenParams().getWidth(), this.mHmd.getScreenParams().getHeight());
-        GLES20.glDisable(3089);
-        GLES20.glDisable(2884);
+        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClear(16640);
         if (this.mChromaticAberrationCorrectionEnabled) {
@@ -100,7 +100,7 @@ public class DistortionRenderer
         else {
             GLES20.glUseProgram(this.mProgramHolder.program);
         }
-        GLES20.glEnable(3089);
+        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
         GLES20.glScissor(0, 0, this.mHmd.getScreenParams().getWidth() / 2, this.mHmd.getScreenParams().getHeight());
         this.renderDistortionMesh(this.mLeftEyeDistortionMesh, textureId);
         GLES20.glScissor(this.mHmd.getScreenParams().getWidth() / 2, 0, this.mHmd.getScreenParams().getWidth() / 2, this.mHmd.getScreenParams().getHeight());
@@ -170,7 +170,7 @@ public class DistortionRenderer
         final float textureWidthTanAngle = this.mLeftEyeViewport.width + this.mRightEyeViewport.width;
         final float textureHeightTanAngle = Math.max(this.mLeftEyeViewport.height, this.mRightEyeViewport.height);
         final int[] maxTextureSize = { 0 };
-        GLES20.glGetIntegerv(3379, maxTextureSize, 0);
+        GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
         final int textureWidthPx = Math.min(Math.round(textureWidthTanAngle * this.mXPxPerTanAngle), maxTextureSize[0]);
         final int textureHeightPx = Math.min(Math.round(textureHeightTanAngle * this.mYPxPerTanAngle), maxTextureSize[0]);
         float xEyeOffsetTanAngleScreen = (screen.getWidthMeters() / 2.0f - cdp.getInterLensDistance() / 2.0f) / this.mMetersPerTanAngle;
@@ -209,25 +209,25 @@ public class DistortionRenderer
         else {
             holder = this.mProgramHolder;
         }
-        GLES20.glBindBuffer(34962, mesh.mArrayBufferId);
-        GLES20.glVertexAttribPointer(holder.aPosition, 2, 5126, false, 36, 0 * 4);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mesh.mArrayBufferId);
+        GLES20.glVertexAttribPointer(holder.aPosition, 2, GLES20.GL_NEVER6, false, 36, 0 * 4);
         GLES20.glEnableVertexAttribArray(holder.aPosition);
-        GLES20.glVertexAttribPointer(holder.aVignette, 1, 5126, false, 36, 2 * 4);
+        GLES20.glVertexAttribPointer(holder.aVignette, 1, GLES20.GL_NEVER6, false, 36, 2 * 4);
         GLES20.glEnableVertexAttribArray(holder.aVignette);
-        GLES20.glVertexAttribPointer(holder.aBlueTextureCoord, 2, 5126, false, 36, 7 * 4);
+        GLES20.glVertexAttribPointer(holder.aBlueTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 7 * 4);
         GLES20.glEnableVertexAttribArray(holder.aBlueTextureCoord);
         if (this.mChromaticAberrationCorrectionEnabled) {
-            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aRedTextureCoord, 2, 5126, false, 36, 3 * 4);
+            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aRedTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 3 * 4);
             GLES20.glEnableVertexAttribArray(((ProgramHolderAberration)holder).aRedTextureCoord);
-            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aGreenTextureCoord, 2, 5126, false, 36, 5 * 4);
+            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aGreenTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 5 * 4);
             GLES20.glEnableVertexAttribArray(((ProgramHolderAberration)holder).aGreenTextureCoord);
         }
-        GLES20.glActiveTexture(33984);
-        GLES20.glBindTexture(3553, textureId);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glUniform1i(this.mProgramHolder.uTextureSampler, 0);
         GLES20.glUniform1f(this.mProgramHolder.uTextureCoordScale, this.mResolutionScale);
-        GLES20.glBindBuffer(34963, mesh.mElementBufferId);
-        GLES20.glDrawElements(5, mesh.nIndices, 5123, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.mElementBufferId);
+        GLES20.glDrawElements(5, mesh.nIndices, GLES20.GL_NEVER3, 0);
     }
     
     private float computeDistortionScale(final Distortion distortion, final float screenWidthM, final float interpupillaryDistanceM) {
@@ -237,12 +237,12 @@ public class DistortionRenderer
     private int createTexture(final int width, final int height, final int textureFormat, final int textureType) {
         final int[] textureIds = { 0 };
         GLES20.glGenTextures(1, textureIds, 0);
-        GLES20.glBindTexture(3553, textureIds[0]);
-        GLES20.glTexParameteri(3553, 10242, 33071);
-        GLES20.glTexParameteri(3553, 10243, 33071);
-        GLES20.glTexParameteri(3553, 10240, 9729);
-        GLES20.glTexParameteri(3553, 10241, 9729);
-        GLES20.glTexImage2D(3553, 0, textureFormat, width, height, 0, textureFormat, textureType, (Buffer)null);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT2, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT3, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT0, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT1, GLES20.GL_LINEAR);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, textureFormat, width, height, 0, textureFormat, textureType, (Buffer)null);
         return textureIds[0];
     }
     
@@ -261,23 +261,23 @@ public class DistortionRenderer
         this.checkGlError("setupRenderTextureAndRenderbuffer: create texture");
         final int[] renderbufferIds = { 0 };
         GLES20.glGenRenderbuffers(1, renderbufferIds, 0);
-        GLES20.glBindRenderbuffer(36161, renderbufferIds[0]);
-        GLES20.glRenderbufferStorage(36161, 33189, width, height);
+        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, renderbufferIds[0]);
+        GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, width, height);
         this.mRenderbufferId = renderbufferIds[0];
         this.checkGlError("setupRenderTextureAndRenderbuffer: create renderbuffer");
         final int[] framebufferIds = { 0 };
         GLES20.glGenFramebuffers(1, framebufferIds, 0);
-        GLES20.glBindFramebuffer(36160, framebufferIds[0]);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebufferIds[0]);
         this.mFramebufferId = framebufferIds[0];
-        GLES20.glFramebufferTexture2D(36160, 36064, 3553, this.mTextureId, 0);
-        GLES20.glFramebufferRenderbuffer(36160, 36096, 36161, renderbufferIds[0]);
-        final int status = GLES20.glCheckFramebufferStatus(36160);
-        if (status != 36053) {
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, this.mTextureId, 0);
+        GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, renderbufferIds[0]);
+        final int status = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER);
+        if (status != GLES20.GL_FRAMEBUFFER_COMPLETE) {
             final String s = "Framebuffer is not complete: ";
             final String value = String.valueOf(Integer.toHexString(status));
             throw new RuntimeException((value.length() != 0) ? s.concat(value) : new String(s));
         }
-        GLES20.glBindFramebuffer(36160, 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         return framebufferIds[0];
     }
     
@@ -287,7 +287,7 @@ public class DistortionRenderer
             GLES20.glShaderSource(shader, source);
             GLES20.glCompileShader(shader);
             final int[] compiled = { 0 };
-            GLES20.glGetShaderiv(shader, 35713, compiled, 0);
+            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
             if (compiled[0] == 0) {
                 Log.e("DistortionRenderer", new StringBuilder(37).append("Could not compile shader ").append(shaderType).append(":").toString());
                 Log.e("DistortionRenderer", GLES20.glGetShaderInfoLog(shader));
@@ -299,11 +299,11 @@ public class DistortionRenderer
     }
     
     private int createProgram(final String vertexSource, final String fragmentSource) {
-        final int vertexShader = this.loadShader(35633, vertexSource);
+        final int vertexShader = this.loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
         if (vertexShader == 0) {
             return 0;
         }
-        final int pixelShader = this.loadShader(35632, fragmentSource);
+        final int pixelShader = this.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
         if (pixelShader == 0) {
             return 0;
         }
@@ -315,7 +315,7 @@ public class DistortionRenderer
             this.checkGlError("glAttachShader");
             GLES20.glLinkProgram(program);
             final int[] linkStatus = { 0 };
-            GLES20.glGetProgramiv(program, 35714, linkStatus, 0);
+            GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
             if (linkStatus[0] != 1) {
                 Log.e("DistortionRenderer", "Could not link program: ");
                 Log.e("DistortionRenderer", GLES20.glGetProgramInfoLog(program));
@@ -547,12 +547,12 @@ public class DistortionRenderer
             GLES20.glGenBuffers(2, bufferIds, 0);
             this.mArrayBufferId = bufferIds[0];
             this.mElementBufferId = bufferIds[1];
-            GLES20.glBindBuffer(34962, this.mArrayBufferId);
-            GLES20.glBufferData(34962, vertexData.length * 4, (Buffer)vertexBuffer, 35044);
-            GLES20.glBindBuffer(34963, this.mElementBufferId);
-            GLES20.glBufferData(34963, indexData.length * 2, (Buffer)indexBuffer, 35044);
-            GLES20.glBindBuffer(34962, 0);
-            GLES20.glBindBuffer(34963, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferId);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexData.length * 4, (Buffer)vertexBuffer, GLES20.GL_STATIC_DRAW);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementBufferId);
+            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexData.length * 2, (Buffer)indexBuffer, GLES20.GL_STATIC_DRAW);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
         }
     }
 }

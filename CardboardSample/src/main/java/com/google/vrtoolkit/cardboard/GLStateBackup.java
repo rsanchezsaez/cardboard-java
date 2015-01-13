@@ -41,17 +41,17 @@ class GLStateBackup
     }
     
     void readFromGL() {
-        GLES20.glGetIntegerv(2978, this.mViewport);
-        this.mCullFaceEnabled = GLES20.glIsEnabled(2884);
-        this.mScissorTestEnabled = GLES20.glIsEnabled(3089);
-        this.mDepthTestEnabled = GLES20.glIsEnabled(2929);
-        GLES20.glGetFloatv(3106, this.mClearColor);
-        GLES20.glGetIntegerv(35725, this.mShaderProgram);
-        GLES20.glGetIntegerv(3088, this.mScissorBox);
-        GLES20.glGetIntegerv(34016, this.mTextureUnit);
-        GLES20.glGetIntegerv(32873, this.mTexture2dId);
-        GLES20.glGetIntegerv(34964, this.mArrayBufferBinding);
-        GLES20.glGetIntegerv(34965, this.mElementArrayBufferBinding);
+        GLES20.glGetIntegerv(GLES20.GL_VIEWPORT, this.mViewport);
+        this.mCullFaceEnabled = GLES20.glIsEnabled(GLES20.GL_CULL_FACE);
+        this.mScissorTestEnabled = GLES20.glIsEnabled(GLES20.GL_SCISSOR_TEST);
+        this.mDepthTestEnabled = GLES20.glIsEnabled(GLES20.GL_DEPTH_TEST);
+        GLES20.glGetFloatv(GLES20.GL_COLOR_CLEAR_VALUE, this.mClearColor);
+        GLES20.glGetIntegerv(GLES20.GL_CURRENT_PROGRAM, this.mShaderProgram);
+        GLES20.glGetIntegerv(GLES20.GL_SCISSOR_BOX, this.mScissorBox);
+        GLES20.glGetIntegerv(GLES20.GL_ACTIVE_TEXTURE, this.mTextureUnit);
+        GLES20.glGetIntegerv(GLES20.GL_TEXTURE_BINDING_2D, this.mTexture2dId);
+        GLES20.glGetIntegerv(GLES20.GL_ARRAY_BUFFER_BINDING, this.mArrayBufferBinding);
+        GLES20.glGetIntegerv(GLES20.GL_ELEMENT_ARRAY_BUFFER_BINDING, this.mElementArrayBufferBinding);
         for (final VertexAttributeState vas : this.mVertexAttributes) {
             vas.readFromGL();
         }
@@ -61,30 +61,30 @@ class GLStateBackup
         for (final VertexAttributeState vas : this.mVertexAttributes) {
             vas.writeToGL();
         }
-        GLES20.glBindBuffer(34962, this.mArrayBufferBinding.array()[0]);
-        GLES20.glBindBuffer(34963, this.mElementArrayBufferBinding.array()[0]);
-        GLES20.glBindTexture(3553, this.mTexture2dId.array()[0]);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferBinding.array()[0]);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementArrayBufferBinding.array()[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, this.mTexture2dId.array()[0]);
         GLES20.glActiveTexture(this.mTextureUnit.array()[0]);
         GLES20.glScissor(this.mScissorBox.array()[0], this.mScissorBox.array()[1], this.mScissorBox.array()[2], this.mScissorBox.array()[3]);
         GLES20.glUseProgram(this.mShaderProgram.array()[0]);
         GLES20.glClearColor(this.mClearColor.array()[0], this.mClearColor.array()[1], this.mClearColor.array()[2], this.mClearColor.array()[3]);
         if (this.mCullFaceEnabled) {
-            GLES20.glEnable(2884);
+            GLES20.glEnable(GLES20.GL_CULL_FACE);
         }
         else {
-            GLES20.glDisable(2884);
+            GLES20.glDisable(GLES20.GL_CULL_FACE);
         }
         if (this.mScissorTestEnabled) {
-            GLES20.glEnable(3089);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
         }
         else {
-            GLES20.glDisable(3089);
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
         }
         if (this.mDepthTestEnabled) {
-            GLES20.glEnable(2929);
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         }
         else {
-            GLES20.glDisable(2929);
+            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         }
         GLES20.glViewport(this.mViewport.array()[0], this.mViewport.array()[1], this.mViewport.array()[2], this.mViewport.array()[3]);
     }
@@ -101,7 +101,7 @@ class GLStateBackup
         }
         
         void readFromGL() {
-            GLES20.glGetVertexAttribiv(this.mAttributeId, 34338, this.mEnabled);
+            GLES20.glGetVertexAttribiv(this.mAttributeId, GLES20.GL_VERTEX_ATTRIB_ARRAY_ENABLED, this.mEnabled);
         }
         
         void writeToGL() {

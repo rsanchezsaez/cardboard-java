@@ -135,7 +135,7 @@ public class HeadTracker implements SensorEventListener
         }
         synchronized (this.mTracker) {
             final double secondsSinceLastGyroEvent = TimeUnit.NANOSECONDS.toSeconds(this.mClock.nanoTime() - this.mLatestGyroEventClockTimeNs);
-            final double secondsToPredictForward = secondsSinceLastGyroEvent + 0.03333333333333333;
+            final double secondsToPredictForward = secondsSinceLastGyroEvent + 0.0GLES20.GL_PACK_ALIGNMENTGLES20.GL_PACK_ALIGNMENTGLES20.GL_PACK_ALIGNMENTGLES20.GL_PACK_ALIGNMENT;
             final double[] mat = this.mTracker.getPredictedGLMatrix(secondsToPredictForward);
             for (int i = 0; i < headView.length; ++i) {
                 this.mTmpHeadView[i] = (float)mat[i];

@@ -205,7 +205,7 @@ class UiLayer
                 GLES20.glShaderSource(shader, source);
                 GLES20.glCompileShader(shader);
                 final int[] compiled = { 0 };
-                GLES20.glGetShaderiv(shader, 35713, compiled, 0);
+                GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
                 if (compiled[0] == 0) {
                     Log.e(UiLayer.TAG, new StringBuilder(37).append("Could not compile shader ").append(shaderType).append(":").toString());
                     Log.e(UiLayer.TAG, GLES20.glGetShaderInfoLog(shader));
@@ -217,11 +217,11 @@ class UiLayer
         }
         
         private int createProgram(final String vertexSource, final String fragmentSource) {
-            final int vertexShader = this.loadShader(35633, vertexSource);
+            final int vertexShader = this.loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
             if (vertexShader == 0) {
                 return 0;
             }
-            final int pixelShader = this.loadShader(35632, fragmentSource);
+            final int pixelShader = this.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
             if (pixelShader == 0) {
                 return 0;
             }
@@ -233,7 +233,7 @@ class UiLayer
                 checkGlError("glAttachShader");
                 GLES20.glLinkProgram(program);
                 final int[] linkStatus = { 0 };
-                GLES20.glGetProgramiv(program, 35714, linkStatus, 0);
+                GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
                 if (linkStatus[0] != 1) {
                     Log.e(UiLayer.TAG, "Could not link program: ");
                     Log.e(UiLayer.TAG, GLES20.glGetProgramInfoLog(program));
@@ -277,10 +277,10 @@ class UiLayer
             GLES20.glGenBuffers(2, bufferIds, 0);
             this.mArrayBufferId = bufferIds[0];
             this.mElementBufferId = bufferIds[1];
-            GLES20.glBindBuffer(34962, this.mArrayBufferId);
-            GLES20.glBufferData(34962, vertexData.length * 4, (Buffer)vertexBuffer, 35044);
-            GLES20.glBindBuffer(34963, this.mElementBufferId);
-            GLES20.glBufferData(34963, indexData.length * 4, (Buffer)indexBuffer, 35044);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferId);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexData.length * 4, (Buffer)vertexBuffer, GLES20.GL_STATIC_DRAW);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementBufferId);
+            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexData.length * 4, (Buffer)indexBuffer, GLES20.GL_STATIC_DRAW);
             checkGlError("genAndBindBuffers");
         }
         
@@ -289,15 +289,15 @@ class UiLayer
         }
         
         void draw() {
-            GLES20.glDisable(2929);
-            GLES20.glDisable(2884);
+            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+            GLES20.glDisable(GLES20.GL_CULL_FACE);
             GLES20.glUseProgram(this.mShader.program);
             GLES20.glUniformMatrix4fv(this.mShader.uMvpMatrix, 1, false, this.mMvp, 0);
-            GLES20.glBindBuffer(34962, this.mArrayBufferId);
-            GLES20.glVertexAttribPointer(this.mShader.aPosition, 2, 5126, false, 8, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferId);
+            GLES20.glVertexAttribPointer(this.mShader.aPosition, 2, GLES20.GL_NEVER6, false, 8, 0);
             GLES20.glEnableVertexAttribArray(this.mShader.aPosition);
-            GLES20.glBindBuffer(34963, this.mElementBufferId);
-            GLES20.glDrawElements(5, this.mNumIndices, 5123, 0);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementBufferId);
+            GLES20.glDrawElements(5, this.mNumIndices, GLES20.GL_NEVER3, 0);
         }
     }
     
