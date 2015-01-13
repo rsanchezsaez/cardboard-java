@@ -60,58 +60,27 @@ public class Matrix3x3d
     }
     
     public void setZero() {
-        final double[] m = this.m;
-        final int n = 0;
-        final double[] i = this.m;
-        final int n2 = 1;
-        final double[] j = this.m;
-        final int n3 = 2;
-        final double[] k = this.m;
-        final int n4 = 3;
-        final double[] l = this.m;
-        final int n5 = 4;
-        final double[] m2 = this.m;
-        final int n6 = 5;
-        final double[] m3 = this.m;
-        final int n7 = 6;
-        final double[] m4 = this.m;
-        final int n8 = 7;
-        final double[] m5 = this.m;
-        final int n9 = 8;
-        final double n10 = 0.0;
-        m5[n9] = n10;
-        m3[n7] = (m4[n8] = n10);
-        l[n5] = (m2[n6] = n10);
-        j[n3] = (k[n4] = n10);
-        m[n] = (i[n2] = n10);
+        this.m[0] = 0;
+        this.m[1] = 0;
+        this.m[2] = 0;
+        this.m[3] = 0;
+        this.m[4] = 0;
+        this.m[5] = 0;
+        this.m[6] = 0;
+        this.m[7] = 0;
+        this.m[8] = 0;
     }
     
     public void setIdentity() {
-        final double[] m = this.m;
-        final int n = 1;
-        final double[] i = this.m;
-        final int n2 = 2;
-        final double[] j = this.m;
-        final int n3 = 3;
-        final double[] k = this.m;
-        final int n4 = 5;
-        final double[] l = this.m;
-        final int n5 = 6;
-        final double[] m2 = this.m;
-        final int n6 = 7;
-        final double n7 = 0.0;
-        l[n5] = (m2[n6] = n7);
-        j[n3] = (k[n4] = n7);
-        m[n] = (i[n2] = n7);
-        final double[] m3 = this.m;
-        final int n8 = 0;
-        final double[] m4 = this.m;
-        final int n9 = 4;
-        final double[] m5 = this.m;
-        final int n10 = 8;
-        final double n11 = 1.0;
-        m5[n10] = n11;
-        m3[n8] = (m4[n9] = n11);
+        this.m[0] = 1;
+        this.m[1] = 0;
+        this.m[2] = 0;
+        this.m[3] = 0;
+        this.m[4] = 1;
+        this.m[5] = 0;
+        this.m[6] = 0;
+        this.m[7] = 0;
+        this.m[8] = 1;
     }
     
     public void setSameDiagonal(final double d) {
