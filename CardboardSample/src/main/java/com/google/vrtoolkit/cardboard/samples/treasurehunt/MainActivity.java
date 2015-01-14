@@ -166,7 +166,7 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
 
         // cardboardView.setVRModeEnabled(false);
         // cardboardView.setDistortionCorrectionEnabled(false);
-        cardboardView.setNeckModelEnabled(false);
+        // cardboardView.setNeckModelEnabled(false);
 
         mModelCube = new float[16];
         mCamera = new float[16];
