@@ -45,7 +45,7 @@ public class DistortionRenderer
         this.mFramebufferId = -1;
         this.mOriginalFramebufferId = IntBuffer.allocate(1);
         this.mTextureFormat = GLES20.GL_RGB;
-        this.mTextureType = GLES20.GL_NEVER1;
+        this.mTextureType = GLES20.GL_UNSIGNED_BYTE;
         this.mResolutionScale = 1.0f;
         this.mGLStateBackup = new GLStateBackup();
         this.mGLStateBackupAberration = new GLStateBackup();
@@ -93,7 +93,7 @@ public class DistortionRenderer
         GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GLES20.glClear(16640);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         if (this.mChromaticAberrationCorrectionEnabled) {
             GLES20.glUseProgram(this.mProgramHolderAberration.program);
         }
@@ -210,16 +210,16 @@ public class DistortionRenderer
             holder = this.mProgramHolder;
         }
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mesh.mArrayBufferId);
-        GLES20.glVertexAttribPointer(holder.aPosition, 2, GLES20.GL_NEVER6, false, 36, 0 * 4);
+        GLES20.glVertexAttribPointer(holder.aPosition, 2, GLES20.GL_FLOAT, false, 36, 0 * 4);
         GLES20.glEnableVertexAttribArray(holder.aPosition);
-        GLES20.glVertexAttribPointer(holder.aVignette, 1, GLES20.GL_NEVER6, false, 36, 2 * 4);
+        GLES20.glVertexAttribPointer(holder.aVignette, 1, GLES20.GL_FLOAT, false, 36, 2 * 4);
         GLES20.glEnableVertexAttribArray(holder.aVignette);
-        GLES20.glVertexAttribPointer(holder.aBlueTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 7 * 4);
+        GLES20.glVertexAttribPointer(holder.aBlueTextureCoord, 2, GLES20.GL_FLOAT, false, 36, 7 * 4);
         GLES20.glEnableVertexAttribArray(holder.aBlueTextureCoord);
         if (this.mChromaticAberrationCorrectionEnabled) {
-            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aRedTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 3 * 4);
+            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aRedTextureCoord, 2, GLES20.GL_FLOAT, false, 36, 3 * 4);
             GLES20.glEnableVertexAttribArray(((ProgramHolderAberration)holder).aRedTextureCoord);
-            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aGreenTextureCoord, 2, GLES20.GL_NEVER6, false, 36, 5 * 4);
+            GLES20.glVertexAttribPointer(((ProgramHolderAberration)holder).aGreenTextureCoord, 2, GLES20.GL_FLOAT, false, 36, 5 * 4);
             GLES20.glEnableVertexAttribArray(((ProgramHolderAberration)holder).aGreenTextureCoord);
         }
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -227,7 +227,7 @@ public class DistortionRenderer
         GLES20.glUniform1i(this.mProgramHolder.uTextureSampler, 0);
         GLES20.glUniform1f(this.mProgramHolder.uTextureCoordScale, this.mResolutionScale);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.mElementBufferId);
-        GLES20.glDrawElements(5, mesh.nIndices, GLES20.GL_NEVER3, 0);
+        GLES20.glDrawElements(5, mesh.nIndices, GLES20.GL_UNSIGNED_SHORT, 0);
     }
     
     private float computeDistortionScale(final Distortion distortion, final float screenWidthM, final float interpupillaryDistanceM) {
@@ -238,10 +238,10 @@ public class DistortionRenderer
         final int[] textureIds = { 0 };
         GLES20.glGenTextures(1, textureIds, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT2, GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT3, GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT0, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_STENCIL_BUFFER_BIT1, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, textureFormat, width, height, 0, textureFormat, textureType, (Buffer)null);
         return textureIds[0];
     }

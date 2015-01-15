@@ -294,10 +294,10 @@ class UiLayer
             GLES20.glUseProgram(this.mShader.program);
             GLES20.glUniformMatrix4fv(this.mShader.uMvpMatrix, 1, false, this.mMvp, 0);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferId);
-            GLES20.glVertexAttribPointer(this.mShader.aPosition, 2, GLES20.GL_NEVER6, false, 8, 0);
+            GLES20.glVertexAttribPointer(this.mShader.aPosition, 2, GLES20.GL_FLOAT, false, 8, 0);
             GLES20.glEnableVertexAttribArray(this.mShader.aPosition);
             GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementBufferId);
-            GLES20.glDrawElements(5, this.mNumIndices, GLES20.GL_NEVER3, 0);
+            GLES20.glDrawElements(5, this.mNumIndices, GLES20.GL_UNSIGNED_SHORT, 0);
         }
     }
     
