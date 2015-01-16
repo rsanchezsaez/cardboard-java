@@ -33,10 +33,54 @@ public class DistortionRenderer
     private float mMetersPerTanAngle;
     private ProgramHolder mProgramHolder;
     private ProgramHolderAberration mProgramHolderAberration;
-    static final String VERTEX_SHADER = "attribute vec2 aPosition;\nattribute float aVignette;\nattribute vec2 aBlueTextureCoord;\nvarying vec2 vTextureCoord;\nvarying float vVignette;\nuniform float uTextureCoordScale;\nvoid main() {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n    vVignette = aVignette;\n}\n";
-    static final String FRAGMENT_SHADER = "precision mediump float;\nvarying vec2 vTextureCoord;\nvarying float vVignette;\nuniform sampler2D uTextureSampler;\nvoid main() {\n    gl_FragColor = vVignette * texture2D(uTextureSampler, vTextureCoord);\n}\n";
-    static final String VERTEX_SHADER_ABERRATION = "attribute vec2 aPosition;\nattribute float aVignette;\nattribute vec2 aRedTextureCoord;\nattribute vec2 aGreenTextureCoord;\nattribute vec2 aBlueTextureCoord;\nvarying vec2 vRedTextureCoord;\nvarying vec2 vBlueTextureCoord;\nvarying vec2 vGreenTextureCoord;\nvarying float vVignette;\nuniform float uTextureCoordScale;\nvoid main() {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vRedTextureCoord = aRedTextureCoord.xy * uTextureCoordScale;\n    vGreenTextureCoord = aGreenTextureCoord.xy * uTextureCoordScale;\n    vBlueTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n    vVignette = aVignette;\n}\n";
-    static final String FRAGMENT_SHADER_ABERRATION = "precision mediump float;\nvarying vec2 vRedTextureCoord;\nvarying vec2 vBlueTextureCoord;\nvarying vec2 vGreenTextureCoord;\nvarying float vVignette;\nuniform sampler2D uTextureSampler;\nvoid main() {\n    gl_FragColor = vVignette * vec4(texture2D(uTextureSampler, vRedTextureCoord).r,\n                    texture2D(uTextureSampler, vGreenTextureCoord).g,\n                    texture2D(uTextureSampler, vBlueTextureCoord).b, 1.0);\n}\n";
+    static final String VERTEX_SHADER =
+            "attribute vec2 aPosition;\n"
+          + "attribute float aVignette;\n"
+          + "attribute vec2 aBlueTextureCoord;\n"
+          + "varying vec2 vTextureCoord;\n"
+          + "varying float vVignette;\n"
+          + "uniform float uTextureCoordScale;\n"
+          + "void main() {\n"
+          + "    gl_Position = vec4(aPosition, 0.0, 1.0);\n"
+          + "    vTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n"
+          + "    vVignette = aVignette;\n"
+          + "}\n";
+    static final String FRAGMENT_SHADER =
+            "precision mediump float;\n"
+          + "varying vec2 vTextureCoord;\n"
+          + "varying float vVignette;\n"
+          + "uniform sampler2D uTextureSampler;\n"
+          + "void main() {\n"
+          + "    gl_FragColor = vVignette * texture2D(uTextureSampler, vTextureCoord);\n"
+          + "}\n";
+    static final String VERTEX_SHADER_ABERRATION = "attribute vec2 aPosition;\n"
+            + "attribute float aVignette;\n"
+            + "attribute vec2 aRedTextureCoord;\n"
+            + "attribute vec2 aGreenTextureCoord;\n"
+            + "attribute vec2 aBlueTextureCoord;\n"
+            + "varying vec2 vRedTextureCoord;\n"
+            + "varying vec2 vBlueTextureCoord;\n"
+            + "varying vec2 vGreenTextureCoord;\n"
+            + "varying float vVignette;\n"
+            + "uniform float uTextureCoordScale;\n"
+            + "void main() {\n"
+            + "    gl_Position = vec4(aPosition, 0.0, 1.0);\n"
+            + "    vRedTextureCoord = aRedTextureCoord.xy * uTextureCoordScale;\n"
+            + "    vGreenTextureCoord = aGreenTextureCoord.xy * uTextureCoordScale;\n"
+            + "    vBlueTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n"
+            + "    vVignette = aVignette;\n"
+            + "}\n";
+    static final String FRAGMENT_SHADER_ABERRATION = "precision mediump float;\n"
+            + "varying vec2 vRedTextureCoord;\n"
+            + "varying vec2 vBlueTextureCoord;\n"
+            + "varying vec2 vGreenTextureCoord;\n"
+            + "varying float vVignette;\n"
+            + "uniform sampler2D uTextureSampler;\n"
+            + "void main() {\n"
+            + "    gl_FragColor = vVignette * vec4(texture2D(uTextureSampler, vRedTextureCoord).r,\n"
+            + "                    texture2D(uTextureSampler, vGreenTextureCoord).g,\n"
+            + "                    texture2D(uTextureSampler, vBlueTextureCoord).b, 1.0);\n"
+            + "}\n";
     
     public DistortionRenderer() {
         super();
