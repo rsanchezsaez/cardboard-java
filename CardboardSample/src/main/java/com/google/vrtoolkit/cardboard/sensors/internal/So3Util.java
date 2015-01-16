@@ -137,8 +137,11 @@ public class So3Util
     
     public static void generatorField(final int i, final Matrix3x3d pos, final Matrix3x3d result) {
         result.set(i, 0, 0.0);
-        result.set((i + 1) % 3, 0, -pos.get((i + 2) % 3, 0));
-        result.set((i + 2) % 3, 0, pos.get((i + 1) % 3, 0));
+        result.set((i + 1) % 3,
+                   0,
+                   -pos.get((i + 2) % 3, 0));
+        result.set((i + 2) % 3,
+                   0, pos.get((i + 1) % 3,0));
     }
     
     static {

@@ -2,6 +2,8 @@ package com.google.vrtoolkit.cardboard.sensors.internal;
 
 public class OrientationEKF
 {
+    private static final String TAG = "OrientationEKF";
+
     private static final float NS2S = 1.0E-9f;
     private static final double MIN_ACCEL_NOISE_SIGMA = 0.75;
     private static final double MAX_ACCEL_NOISE_SIGMA = 7.0;
@@ -213,11 +215,11 @@ public class OrientationEKF
     
     public synchronized void processGyro(final Vector3d gyro, final long sensorTimeStamp) {
         final float kTimeThreshold = 0.04f;
-        final float kdTdefault = 0.01f;
+        final float kdTDefault = 0.01f;
         if (this.sensorTimeStampGyro != 0L) {
             float dT = (sensorTimeStamp - this.sensorTimeStampGyro) * 1.0E-9f;
-            if (dT > 0.04f) {
-                dT = (this.gyroFilterValid ? this.filteredGyroTimestep : 0.01f);
+            if (dT > kTimeThreshold) {
+                dT = (this.gyroFilterValid ? this.filteredGyroTimestep : kdTDefault );
             }
             else {
                 this.filterGyroTimestep(dT);
@@ -225,9 +227,7 @@ public class OrientationEKF
             this.mu.set(gyro);
             this.mu.scale(-dT);
             So3Util.sO3FromMu(this.mu, this.so3LastMotion);
-            this.processGyroTempM1.set(this.so3SensorFromWorld);
-            Matrix3x3d.mult(this.so3LastMotion, this.so3SensorFromWorld, this.processGyroTempM1);
-            this.so3SensorFromWorld.set(this.processGyroTempM1);
+            Matrix3x3d.mult(this.so3LastMotion, this.so3SensorFromWorld, this.so3SensorFromWorld);
             this.updateCovariancesAfterMotion();
             this.processGyroTempM2.set(this.mQ);
             this.processGyroTempM2.scale(dT * dT);
@@ -241,10 +241,14 @@ public class OrientationEKF
         final double currentAccelNormChange = Math.abs(currentAccelNorm - this.previousAccelNorm);
         this.previousAccelNorm = currentAccelNorm;
         final double kSmoothingFactor = 0.5;
-        this.movingAverageAccelNormChange = 0.5 * currentAccelNormChange + 0.5 * this.movingAverageAccelNormChange;
+        this.movingAverageAccelNormChange = kSmoothingFactor * currentAccelNormChange
+                + kSmoothingFactor * this.movingAverageAccelNormChange;
         final double kMaxAccelNormChange = 0.15;
-        final double normChangeRatio = this.movingAverageAccelNormChange / 0.15;
-        final double accelNoiseSigma = Math.min(7.0, 0.75 + normChangeRatio * 6.25);
+        final double kMinAccelNoiseSigma = 0.75;
+        final double kMaxAccelNoiseSigma = 7.0;
+        final double normChangeRatio = this.movingAverageAccelNormChange / kMaxAccelNormChange;
+        final double accelNoiseSigma = Math.min(kMaxAccelNoiseSigma,
+                kMinAccelNoiseSigma + normChangeRatio * (kMaxAccelNoiseSigma - kMinAccelNoiseSigma));
         this.mRaccel.setSameDiagonal(accelNoiseSigma * accelNoiseSigma);
     }
     
@@ -355,39 +359,29 @@ public class OrientationEKF
                 this.rotationMatrix[4 * c + r] = so3.get(r, c);
             }
         }
-        final double[] rotationMatrix = this.rotationMatrix;
-        final int n = 3;
-        final double[] rotationMatrix2 = this.rotationMatrix;
-        final int n2 = 7;
-        final double[] rotationMatrix3 = this.rotationMatrix;
-        final int n3 = 11;
-        final double n4 = 0.0;
-        rotationMatrix3[n3] = n4;
-        rotationMatrix[n] = (rotationMatrix2[n2] = n4);
-        final double[] rotationMatrix4 = this.rotationMatrix;
-        final int n5 = 12;
-        final double[] rotationMatrix5 = this.rotationMatrix;
-        final int n6 = 13;
-        final double[] rotationMatrix6 = this.rotationMatrix;
-        final int n7 = 14;
-        final double n8 = 0.0;
-        rotationMatrix6[n7] = n8;
-        rotationMatrix4[n5] = (rotationMatrix5[n6] = n8);
+
+        this.rotationMatrix[3] = 0.0;
+        this.rotationMatrix[7] = 0.0;
+        this.rotationMatrix[11] = 0.0;
+
+        this.rotationMatrix[12] = 0.0;
+        this.rotationMatrix[13] = 0.0;
+        this.rotationMatrix[14] = 0.0;
         this.rotationMatrix[15] = 1.0;
         return this.rotationMatrix;
     }
     
     private void filterGyroTimestep(final float timeStep) {
         final float kFilterCoeff = 0.95f;
-        final float kMinSamples = 10.0f;
+        final int kMinSamples = 10;
         if (!this.timestepFilterInit) {
             this.filteredGyroTimestep = timeStep;
             this.numGyroTimestepSamples = 1;
             this.timestepFilterInit = true;
         }
         else {
-            this.filteredGyroTimestep = 0.95f * this.filteredGyroTimestep + 0.050000012f * timeStep;
-            if (++this.numGyroTimestepSamples > 10.0f) {
+            this.filteredGyroTimestep = kFilterCoeff * this.filteredGyroTimestep + (1 - kFilterCoeff) * timeStep;
+            if (++this.numGyroTimestepSamples > kMinSamples) {
                 this.gyroFilterValid = true;
             }
         }
