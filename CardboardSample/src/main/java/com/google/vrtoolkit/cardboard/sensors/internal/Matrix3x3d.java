@@ -267,4 +267,19 @@ public class Matrix3x3d
         result.set((this.m[4] * this.m[8] - this.m[7] * this.m[5]) * invdet, -(this.m[1] * this.m[8] - this.m[2] * this.m[7]) * invdet, (this.m[1] * this.m[5] - this.m[2] * this.m[4]) * invdet, -(this.m[3] * this.m[8] - this.m[5] * this.m[6]) * invdet, (this.m[0] * this.m[8] - this.m[2] * this.m[6]) * invdet, -(this.m[0] * this.m[5] - this.m[3] * this.m[2]) * invdet, (this.m[3] * this.m[7] - this.m[6] * this.m[4]) * invdet, -(this.m[0] * this.m[7] - this.m[6] * this.m[1]) * invdet, (this.m[0] * this.m[4] - this.m[3] * this.m[1]) * invdet);
         return true;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder().append("{ ");
+        for (int i = 0; i < 9; ++i)
+        {
+            builder.append(Double.toString(this.m[i]));
+            if (i < 9 - 1)
+            {
+                builder.append(", ");
+            }
+        }
+        builder.append(" }");
+        return builder.toString();
+    }
 }

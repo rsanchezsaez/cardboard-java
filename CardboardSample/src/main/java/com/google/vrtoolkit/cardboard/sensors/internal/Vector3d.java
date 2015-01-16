@@ -111,4 +111,16 @@ public class Vector3d
             return 2;
         }
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder().append("{ ");
+        builder.append(Double.toString(this.x));
+        builder.append(", ");
+        builder.append(Double.toString(this.y));
+        builder.append(", ");
+        builder.append(Double.toString(this.z));
+        builder.append(" }");
+        return builder.toString();
+    }
 }
