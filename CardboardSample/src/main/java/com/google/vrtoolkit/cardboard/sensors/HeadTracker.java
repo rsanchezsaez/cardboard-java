@@ -52,7 +52,8 @@ public class HeadTracker implements SensorEventListener
         this.mTracker = new OrientationEKF();
         this.mDisplay = display;
         Matrix.setIdentityM(this.mNeckModelTranslation, 0);
-        Matrix.translateM(this.mNeckModelTranslation, 0, 0.0f, -0.075f, 0.08f);
+        Matrix.translateM(this.mNeckModelTranslation, 0,
+                0.0f, -DEFAULT_NECK_VERTICAL_OFFSET, DEFAULT_NECK_HORIZONTAL_OFFSET);
     }
     
     public void onSensorChanged(final SensorEvent event) {
@@ -145,7 +146,7 @@ public class HeadTracker implements SensorEventListener
         Matrix.multiplyMM(headView, offset, this.mTmpHeadView2, 0, this.mEkfToHeadTracker, 0);
         if (this.mNeckModelEnabled) {
             Matrix.multiplyMM(this.mTmpHeadView, 0, this.mNeckModelTranslation, 0, headView, offset);
-            Matrix.translateM(headView, offset, this.mTmpHeadView, 0, 0.0f, 0.075f, 0.0f);
+            Matrix.translateM(headView, offset, this.mTmpHeadView, 0, 0.0f, DEFAULT_NECK_VERTICAL_OFFSET, 0.0f);
         }
     }
 }
