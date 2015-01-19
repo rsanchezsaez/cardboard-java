@@ -43,15 +43,15 @@ public class GyroBiasEstimator
         this.mCurrGyro.set(gyro);
         Vector3d.sub(this.mCurrGyro, this.mLastGyro, this.mGyroDiff);
         final float mCurrDiff = (float)this.mGyroDiff.length();
-        this.mGyroMagnitudeDiffSmoothed = 0.01f * mCurrDiff + 0.99f * this.mGyroMagnitudeDiffSmoothed;
+        this.mGyroMagnitudeDiffSmoothed = MAX_GYRO_DIFF * mCurrDiff + (1-MAX_GYRO_DIFF) * this.mGyroMagnitudeDiffSmoothed;
         this.mLastGyro.set(this.mCurrGyro);
-        final boolean eventIsDelayed = sensorTimeStamp > this.mLastGyroTimeNs + 100000000L;
+        final boolean eventIsDelayed = sensorTimeStamp > this.mLastGyroTimeNs + MAX_DELAY_BETWEEN_EVENTS_NS;
         this.mLastGyroTimeNs = sensorTimeStamp;
         if (eventIsDelayed) {
             this.resetCalibration();
             return;
         }
-        if (this.mBiasEstimate.mState == Estimate.State.CALIBRATING && sensorTimeStamp > this.mCalibrationStartTimeNs + 5000000000L) {
+        if (this.mBiasEstimate.mState == Estimate.State.CALIBRATING && sensorTimeStamp > this.mCalibrationStartTimeNs + CALIBRATION_DURATION_NS) {
             this.mBiasEstimate.mState = Estimate.State.CALIBRATED;
             return;
         }
@@ -75,7 +75,7 @@ public class GyroBiasEstimator
             this.mCalibrationStartTimeNs = gyroTimeStamp;
         }
         else {
-            smooth(this.mBiasEstimate.mBias, this.mCurrGyro, 0.01f);
+            smooth(this.mBiasEstimate.mBias, this.mCurrGyro, GYRO_SMOOTHING_FACTOR);
         }
     }
     
@@ -84,13 +84,13 @@ public class GyroBiasEstimator
             return;
         }
         this.mCurrAcc.set(acc);
-        final boolean eventIsDelayed = sensorTimeStamp > this.mLastAccTimeNs + 100000000L;
+        final boolean eventIsDelayed = sensorTimeStamp > this.mLastAccTimeNs + MAX_DELAY_BETWEEN_EVENTS_NS;
         this.mLastAccTimeNs = sensorTimeStamp;
         if (eventIsDelayed) {
             this.resetCalibration();
             return;
         }
-        smooth(this.mAccSmoothed, this.mCurrAcc, 0.1f);
+        smooth(this.mAccSmoothed, this.mCurrAcc, ACC_SMOOTHING_FACTOR);
     }
     
     public void getEstimate(final Estimate output) {
@@ -98,7 +98,7 @@ public class GyroBiasEstimator
     }
     
     private boolean canCalibrateGyro() {
-        if (this.mAccSmoothed.length() < 9.999999747378752E-5) {
+        if (this.mAccSmoothed.length() < MIN_ACCEL_LENGTH) {
             return false;
         }
         this.mAccNormalizedTmp.set(this.mAccSmoothed);

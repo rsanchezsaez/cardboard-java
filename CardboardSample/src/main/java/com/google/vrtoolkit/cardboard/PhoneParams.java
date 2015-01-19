@@ -23,7 +23,7 @@ public class PhoneParams
             }
             final int sentinel = header.getInt();
             final int length = header.getInt();
-            if (sentinel != 779508118) {
+            if (sentinel != STREAM_SENTINEL) {
                 Log.e(PhoneParams.TAG, "Error parsing param record: incorrect sentinel.");
                 return null;
             }

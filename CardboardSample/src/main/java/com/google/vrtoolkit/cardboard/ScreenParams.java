@@ -24,11 +24,11 @@ public class ScreenParams
         catch (NoSuchMethodError e) {
             display.getMetrics(metrics);
         }
-        this.mXMetersPerPixel = 0.0254f / metrics.xdpi;
-        this.mYMetersPerPixel = 0.0254f / metrics.ydpi;
+        this.mXMetersPerPixel = METERS_PER_INCH / metrics.xdpi;
+        this.mYMetersPerPixel = METERS_PER_INCH / metrics.ydpi;
         this.mWidth = metrics.widthPixels;
         this.mHeight = metrics.heightPixels;
-        this.mBorderSizeMeters = 0.003f;
+        this.mBorderSizeMeters = DEFAULT_BORDER_SIZE_METERS;
         if (this.mHeight > this.mWidth) {
             final int tempPx = this.mWidth;
             this.mWidth = this.mHeight;
@@ -45,10 +45,10 @@ public class ScreenParams
         }
         final ScreenParams screenParams = new ScreenParams(display);
         if (params.hasXPpi()) {
-            screenParams.mXMetersPerPixel = 0.0254f / params.getXPpi();
+            screenParams.mXMetersPerPixel = METERS_PER_INCH / params.getXPpi();
         }
         if (params.hasYPpi()) {
-            screenParams.mYMetersPerPixel = 0.0254f / params.getYPpi();
+            screenParams.mYMetersPerPixel = METERS_PER_INCH / params.getYPpi();
         }
         if (params.hasBottomBezelHeight()) {
             screenParams.mBorderSizeMeters = params.getBottomBezelHeight();

@@ -73,7 +73,7 @@ public class CardboardDeviceParams
     }
     
     private static boolean isCardboardDeviceUri(final Uri uri) {
-        return "http".equals(uri.getScheme()) && "google.com".equals(uri.getAuthority()) && "/cardboard/cfg".equals(uri.getPath());
+        return HTTP_SCHEME.equals(uri.getScheme()) && URI_HOST_GOOGLE.equals(uri.getAuthority()) && URI_PATH_CARDBOARD_CONFIG.equals(uri.getPath());
     }
     
     public static boolean isCardboardUri(final Uri uri) {
@@ -95,7 +95,7 @@ public class CardboardDeviceParams
             return null;
         }
         CardboardDevice.DeviceParams params = null;
-        final String paramsEncoded = uri.getQueryParameter("p");
+        final String paramsEncoded = uri.getQueryParameter(URI_KEY_PARAMS);
         if (paramsEncoded != null) {
             try {
                 final byte[] bytes = Base64.decode(paramsEncoded, 11);
@@ -127,7 +127,7 @@ public class CardboardDeviceParams
             }
             final int sentinel = header.getInt();
             final int length = header.getInt();
-            if (sentinel != 894990891) {
+            if (sentinel != STREAM_SENTINEL) {
                 Log.e("CardboardDeviceParams", "Error parsing param record: incorrect sentinel.");
                 return null;
             }
@@ -292,11 +292,11 @@ public class CardboardDeviceParams
     }
     
     private void setDefaultValues() {
-        this.mVendor = "Google, Inc.";
-        this.mModel = "Cardboard v1";
-        this.mInterLensDistance = 0.06f;
-        this.mVerticalDistanceToLensCenter = 0.035f;
-        this.mScreenToLensDistance = 0.042f;
+        this.mVendor = DEFAULT_VENDOR;
+        this.mModel = DEFAULT_MODEL;
+        this.mInterLensDistance = DEFAULT_INTER_LENS_DISTANCE;
+        this.mVerticalDistanceToLensCenter = DEFAULT_VERTICAL_DISTANCE_TO_LENS_CENTER;
+        this.mScreenToLensDistance = DEFAULT_SCREEN_TO_LENS_DISTANCE;
         this.mLeftEyeMaxFov = new FieldOfView();
         this.mHasMagnet = true;
         this.mDistortion = new Distortion();
@@ -314,7 +314,7 @@ public class CardboardDeviceParams
     }
     
     static {
-        URI_ORIGINAL_CARDBOARD_NFC = new Uri.Builder().scheme("cardboard").authority("v1.0.0").build();
-        URI_ORIGINAL_CARDBOARD_QR_CODE = new Uri.Builder().scheme("http").authority("g.co").appendEncodedPath("cardboard").build();
+        URI_ORIGINAL_CARDBOARD_NFC = new Uri.Builder().scheme(URI_SCHEME_LEGACY_CARDBOARD).authority(URI_HOST_LEGACY_CARDBOARD).build();
+        URI_ORIGINAL_CARDBOARD_QR_CODE = new Uri.Builder().scheme(HTTP_SCHEME).authority(URI_HOST_GOOGLE_SHORT).appendEncodedPath(URI_PATH_CARDBOARD_HOME).build();
     }
 }

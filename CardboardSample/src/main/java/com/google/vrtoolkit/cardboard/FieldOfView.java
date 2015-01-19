@@ -14,10 +14,10 @@ public class FieldOfView
     
     public FieldOfView() {
         super();
-        this.mLeft = 40.0f;
-        this.mRight = 40.0f;
-        this.mBottom = 40.0f;
-        this.mTop = 40.0f;
+        this.mLeft = DEFAULT_MAX_FOV_LEFT_RIGHT;
+        this.mRight = DEFAULT_MAX_FOV_LEFT_RIGHT;
+        this.mBottom = DEFAULT_MAX_FOV_BOTTOM;
+        this.mTop = DEFAULT_MAX_FOV_TOP;
     }
     
     public FieldOfView(final float left, final float right, final float bottom, final float top) {
