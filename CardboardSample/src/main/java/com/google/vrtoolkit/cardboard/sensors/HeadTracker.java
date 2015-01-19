@@ -43,7 +43,7 @@ public class HeadTracker implements SensorEventListener
         this.mNeckModelTranslation = new float[16];
         this.mTmpHeadView = new float[16];
         this.mTmpHeadView2 = new float[16];
-        this.mNeckModelEnabled = false;
+        this.mNeckModelEnabled = DEFAULT_NECK_MODEL_ENABLED;
         this.mGyroBias = new Vector3d();
         this.mLatestGyro = new Vector3d();
         this.mLatestAcc = new Vector3d();
