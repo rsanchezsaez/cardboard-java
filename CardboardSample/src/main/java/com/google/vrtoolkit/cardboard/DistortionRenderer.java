@@ -225,9 +225,13 @@ public class DistortionRenderer
         final int textureHeightPx = Math.min(Math.round(textureHeightTanAngle * this.mYPxPerTanAngle), maxTextureSize[0]);
         float xEyeOffsetTanAngleScreen = (screen.getWidthMeters() / 2.0f - cdp.getInterLensDistance() / 2.0f) / this.mMetersPerTanAngle;
         final float yEyeOffsetTanAngleScreen = (cdp.getVerticalDistanceToLensCenter() - screen.getBorderSizeMeters()) / this.mMetersPerTanAngle;
-        this.mLeftEyeDistortionMesh = this.createDistortionMesh(this.mLeftEyeViewport, textureWidthTanAngle, textureHeightTanAngle, xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen);
+        this.mLeftEyeDistortionMesh = this.createDistortionMesh(this.mLeftEyeViewport,
+                textureWidthTanAngle, textureHeightTanAngle,
+                xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen);
         xEyeOffsetTanAngleScreen = screen.getWidthMeters() / this.mMetersPerTanAngle - xEyeOffsetTanAngleScreen;
-        this.mRightEyeDistortionMesh = this.createDistortionMesh(this.mRightEyeViewport, textureWidthTanAngle, textureHeightTanAngle, xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen);
+        this.mRightEyeDistortionMesh = this.createDistortionMesh(this.mRightEyeViewport,
+                textureWidthTanAngle, textureHeightTanAngle,
+                xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen);
         this.setupRenderTextureAndRenderbuffer(textureWidthPx, textureHeightPx);
         this.mFovsChanged = false;
     }

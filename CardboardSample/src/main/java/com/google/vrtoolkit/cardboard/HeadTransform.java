@@ -6,7 +6,6 @@ import android.util.*;
 public class HeadTransform
 {
     private static final float GIMBAL_LOCK_EPSILON = 0.01f;
-    private static final float PI = 3.1415927f;
     private final float[] mHeadView;
     
     public HeadTransform() {
@@ -107,7 +106,7 @@ public class HeadTransform
         final float pitch = (float)Math.asin(this.mHeadView[6]);
         float yaw;
         float roll;
-        if (FloatMath.sqrt(1.0f - this.mHeadView[6] * this.mHeadView[6]) >= 0.01f) {
+        if (FloatMath.sqrt(1.0f - this.mHeadView[6] * this.mHeadView[6]) >= GIMBAL_LOCK_EPSILON) {
             yaw = (float)Math.atan2(-this.mHeadView[2], this.mHeadView[10]);
             roll = (float)Math.atan2(-this.mHeadView[4], this.mHeadView[5]);
         }

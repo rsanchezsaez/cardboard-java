@@ -157,7 +157,7 @@ public class CardboardDeviceParams
         try {
             final byte[] paramBytes = this.toByteArray();
             final ByteBuffer header = ByteBuffer.allocate(8);
-            header.putInt(894990891);
+            header.putInt(STREAM_SENTINEL);
             header.putInt(paramBytes.length);
             outputStream.write(header.array());
             outputStream.write(paramBytes);
