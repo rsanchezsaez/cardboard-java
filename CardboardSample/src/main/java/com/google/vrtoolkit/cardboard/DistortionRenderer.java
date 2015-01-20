@@ -197,8 +197,14 @@ public class DistortionRenderer
     }
     
     public void updateViewports(final Viewport leftViewport, final Viewport rightViewport) {
-        leftViewport.setViewport(Math.round(this.mLeftEyeViewport.x * this.mXPxPerTanAngle * this.mResolutionScale), Math.round(this.mLeftEyeViewport.y * this.mYPxPerTanAngle * this.mResolutionScale), Math.round(this.mLeftEyeViewport.width * this.mXPxPerTanAngle * this.mResolutionScale), Math.round(this.mLeftEyeViewport.height * this.mYPxPerTanAngle * this.mResolutionScale));
-        rightViewport.setViewport(Math.round(this.mRightEyeViewport.x * this.mXPxPerTanAngle * this.mResolutionScale), Math.round(this.mRightEyeViewport.y * this.mYPxPerTanAngle * this.mResolutionScale), Math.round(this.mRightEyeViewport.width * this.mXPxPerTanAngle * this.mResolutionScale), Math.round(this.mRightEyeViewport.height * this.mYPxPerTanAngle * this.mResolutionScale));
+        leftViewport.setViewport(Math.round(this.mLeftEyeViewport.x * this.mXPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mLeftEyeViewport.y * this.mYPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mLeftEyeViewport.width * this.mXPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mLeftEyeViewport.height * this.mYPxPerTanAngle * this.mResolutionScale));
+        rightViewport.setViewport(Math.round(this.mRightEyeViewport.x * this.mXPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mRightEyeViewport.y * this.mYPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mRightEyeViewport.width * this.mXPxPerTanAngle * this.mResolutionScale),
+                Math.round(this.mRightEyeViewport.height * this.mYPxPerTanAngle * this.mResolutionScale));
         this.mViewportsChanged = false;
     }
     
@@ -241,8 +247,17 @@ public class DistortionRenderer
         return vp;
     }
     
-    private DistortionMesh createDistortionMesh(final EyeViewport eyeViewport, final float textureWidthTanAngle, final float textureHeightTanAngle, final float xEyeOffsetTanAngleScreen, final float yEyeOffsetTanAngleScreen) {
-        return new DistortionMesh(this.mHmd.getCardboardDeviceParams().getDistortion(), this.mHmd.getCardboardDeviceParams().getDistortion(), this.mHmd.getCardboardDeviceParams().getDistortion(), this.mHmd.getScreenParams().getWidthMeters() / this.mMetersPerTanAngle, this.mHmd.getScreenParams().getHeightMeters() / this.mMetersPerTanAngle, xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen, textureWidthTanAngle, textureHeightTanAngle, eyeViewport.eyeX, eyeViewport.eyeY, eyeViewport.x, eyeViewport.y, eyeViewport.width, eyeViewport.height);
+    private DistortionMesh createDistortionMesh(final EyeViewport eyeViewport,
+                                                final float textureWidthTanAngle, final float textureHeightTanAngle,
+                                                final float xEyeOffsetTanAngleScreen, final float yEyeOffsetTanAngleScreen) {
+        return new DistortionMesh(this.mHmd.getCardboardDeviceParams().getDistortion(),
+                this.mHmd.getCardboardDeviceParams().getDistortion(),
+                this.mHmd.getCardboardDeviceParams().getDistortion(),
+                this.mHmd.getScreenParams().getWidthMeters() / this.mMetersPerTanAngle,
+                this.mHmd.getScreenParams().getHeightMeters() / this.mMetersPerTanAngle,
+                xEyeOffsetTanAngleScreen, yEyeOffsetTanAngleScreen,
+                textureWidthTanAngle, textureHeightTanAngle,
+                eyeViewport.eyeX, eyeViewport.eyeY, eyeViewport.x, eyeViewport.y, eyeViewport.width, eyeViewport.height);
     }
     
     private void renderDistortionMesh(final DistortionMesh mesh, final int textureId) {
@@ -271,7 +286,7 @@ public class DistortionRenderer
         GLES20.glUniform1i(this.mProgramHolder.uTextureSampler, 0);
         GLES20.glUniform1f(this.mProgramHolder.uTextureCoordScale, this.mResolutionScale);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.mElementBufferId);
-        GLES20.glDrawElements(5, mesh.nIndices, GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, mesh.nIndices, GLES20.GL_UNSIGNED_SHORT, 0);
     }
     
     private float computeDistortionScale(final Distortion distortion, final float screenWidthM, final float interpupillaryDistanceM) {
@@ -379,15 +394,16 @@ public class DistortionRenderer
         GLStateBackup state;
         if (aberrationCorrected) {
             holder = new ProgramHolderAberration();
-            holder.program = this.createProgram("attribute vec2 aPosition;\nattribute float aVignette;\nattribute vec2 aRedTextureCoord;\nattribute vec2 aGreenTextureCoord;\nattribute vec2 aBlueTextureCoord;\nvarying vec2 vRedTextureCoord;\nvarying vec2 vBlueTextureCoord;\nvarying vec2 vGreenTextureCoord;\nvarying float vVignette;\nuniform float uTextureCoordScale;\nvoid main() {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vRedTextureCoord = aRedTextureCoord.xy * uTextureCoordScale;\n    vGreenTextureCoord = aGreenTextureCoord.xy * uTextureCoordScale;\n    vBlueTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n    vVignette = aVignette;\n}\n", "precision mediump float;\nvarying vec2 vRedTextureCoord;\nvarying vec2 vBlueTextureCoord;\nvarying vec2 vGreenTextureCoord;\nvarying float vVignette;\nuniform sampler2D uTextureSampler;\nvoid main() {\n    gl_FragColor = vVignette * vec4(texture2D(uTextureSampler, vRedTextureCoord).r,\n                    texture2D(uTextureSampler, vGreenTextureCoord).g,\n                    texture2D(uTextureSampler, vBlueTextureCoord).b, 1.0);\n}\n");
+            holder.program = this.createProgram(VERTEX_SHADER_ABERRATION, FRAGMENT_SHADER_ABERRATION);
             if (holder.program == 0) {
                 throw new RuntimeException("Could not create aberration-corrected program");
             }
             state = this.mGLStateBackupAberration;
         }
-        else {
+        else
+        {
             holder = new ProgramHolder();
-            holder.program = this.createProgram("attribute vec2 aPosition;\nattribute float aVignette;\nattribute vec2 aBlueTextureCoord;\nvarying vec2 vTextureCoord;\nvarying float vVignette;\nuniform float uTextureCoordScale;\nvoid main() {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aBlueTextureCoord.xy * uTextureCoordScale;\n    vVignette = aVignette;\n}\n", "precision mediump float;\nvarying vec2 vTextureCoord;\nvarying float vVignette;\nuniform sampler2D uTextureSampler;\nvoid main() {\n    gl_FragColor = vVignette * texture2D(uTextureSampler, vTextureCoord);\n}\n");
+            holder.program = this.createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
             if (holder.program == 0) {
                 throw new RuntimeException("Could not create program");
             }
@@ -506,14 +522,22 @@ public class DistortionRenderer
         public int mArrayBufferId;
         public int mElementBufferId;
         
-        public DistortionMesh(final Distortion distortionRed, final Distortion distortionGreen, final Distortion distortionBlue, final float screenWidth, final float screenHeight, final float xEyeOffsetScreen, final float yEyeOffsetScreen, final float textureWidth, final float textureHeight, final float xEyeOffsetTexture, final float yEyeOffsetTexture, final float viewportXTexture, final float viewportYTexture, final float viewportWidthTexture, final float viewportHeightTexture) {
+        public DistortionMesh(final Distortion distortionRed,
+                              final Distortion distortionGreen,
+                              final Distortion distortionBlue,
+                              final float screenWidth, final float screenHeight,
+                              final float xEyeOffsetScreen, final float yEyeOffsetScreen,
+                              final float textureWidth, final float textureHeight,
+                              final float xEyeOffsetTexture, final float yEyeOffsetTexture,
+                              final float viewportXTexture, final float viewportYTexture,
+                              final float viewportWidthTexture, final float viewportHeightTexture) {
             super();
             this.mArrayBufferId = -1;
             this.mElementBufferId = -1;
             final float[] vertexData = new float[14400];
             short vertexOffset = 0;
-            for (int row = 0; row < 40; ++row) {
-                for (int col = 0; col < 40; ++col) {
+            for (int row = 0; row < ROWS; ++row) {
+                for (int col = 0; col < COLS; ++col) {
                     final float uTextureBlue = col / 39.0f * (viewportWidthTexture / textureWidth) + viewportXTexture / textureWidth;
                     final float vTextureBlue = row / 39.0f * (viewportHeightTexture / textureHeight) + viewportYTexture / textureHeight;
                     final float xTexture = uTextureBlue * textureWidth - xEyeOffsetTexture;
@@ -531,7 +555,7 @@ public class DistortionRenderer
                     final float screenToTextureRed = (rScreen > 0.0f) ? distortionRed.distortionFactor(rScreen) : 1.0f;
                     final float uTextureRed = (xScreen * screenToTextureRed + xEyeOffsetTexture) / textureWidth;
                     final float vTextureRed = (yScreen * screenToTextureRed + yEyeOffsetTexture) / textureHeight;
-                    final float vignetteSizeTexture = 0.05f / textureToScreenBlue;
+                    final float vignetteSizeTexture = VIGNETTE_SIZE_TAN_ANGLE / textureToScreenBlue;
                     final float dxTexture = xTexture + xEyeOffsetTexture - clamp(xTexture + xEyeOffsetTexture, viewportXTexture + vignetteSizeTexture, viewportXTexture + viewportWidthTexture - vignetteSizeTexture);
                     final float dyTexture = yTexture + yEyeOffsetTexture - clamp(yTexture + yEyeOffsetTexture, viewportYTexture + vignetteSizeTexture, viewportYTexture + viewportHeightTexture - vignetteSizeTexture);
                     final float drTexture = (float)Math.sqrt(dxTexture * dxTexture + dyTexture * dyTexture);
@@ -551,7 +575,7 @@ public class DistortionRenderer
                     vertexData[vertexOffset + 6] = vTextureGreen;
                     vertexData[vertexOffset + 7] = uTextureBlue;
                     vertexData[vertexOffset + 8] = vTextureBlue;
-                    vertexOffset += 9;
+                    vertexOffset += COMPONENTS_PER_VERT;
                 }
             }
             this.nIndices = 3158;
@@ -572,29 +596,25 @@ public class DistortionRenderer
                             --vertexOffset;
                         }
                     }
-                    final short[] array = indexData;
-                    final short n = indexOffset;
+                    indexData[indexOffset] = vertexOffset;
                     ++indexOffset;
-                    array[n] = vertexOffset;
-                    final short[] array2 = indexData;
-                    final short n2 = indexOffset;
+                    indexData[indexOffset] = (short)(vertexOffset + 40);
                     ++indexOffset;
-                    array2[n2] = (short)(vertexOffset + 40);
                 }
                 vertexOffset += 40;
             }
-            final FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+            final FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
             vertexBuffer.put(vertexData).position(0);
-            final ShortBuffer indexBuffer = ByteBuffer.allocateDirect(indexData.length * 2).order(ByteOrder.nativeOrder()).asShortBuffer();
+            final ShortBuffer indexBuffer = ByteBuffer.allocateDirect(indexData.length * BYTES_PER_SHORT).order(ByteOrder.nativeOrder()).asShortBuffer();
             indexBuffer.put(indexData).position(0);
             final int[] bufferIds = new int[2];
             GLES20.glGenBuffers(2, bufferIds, 0);
             this.mArrayBufferId = bufferIds[0];
             this.mElementBufferId = bufferIds[1];
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.mArrayBufferId);
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexData.length * 4, (Buffer)vertexBuffer, GLES20.GL_STATIC_DRAW);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexData.length * BYTES_PER_FLOAT, (Buffer)vertexBuffer, GLES20.GL_STATIC_DRAW);
             GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, this.mElementBufferId);
-            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexData.length * 2, (Buffer)indexBuffer, GLES20.GL_STATIC_DRAW);
+            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexData.length * BYTES_PER_SHORT, (Buffer)indexBuffer, GLES20.GL_STATIC_DRAW);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
             GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
         }
