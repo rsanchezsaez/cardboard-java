@@ -1,15 +1,23 @@
 package com.google.vrtoolkit.cardboard;
 
-import android.app.*;
-import com.google.vrtoolkit.cardboard.sensors.*;
-import android.nfc.*;
-import android.content.*;
-import android.os.*;
-import android.view.*;
+import com.google.vrtoolkit.cardboard.sensors.MagnetSensor;
+import com.google.vrtoolkit.cardboard.sensors.NfcSensor;
 
-public class CardboardActivity extends Activity
-{
-    private static final int NAVIGATION_BAR_TIMEOUT_MS = 2000;
+import android.app.Activity;
+import android.nfc.NdefMessage;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class CardboardActivity extends Activity {
+
+    private static final long NAVIGATION_BAR_TIMEOUT_MS = 2000L;
+
     private CardboardView mCardboardView;
     private MagnetSensor mMagnetSensor;
     private NfcSensor mNfcSensor;
@@ -18,49 +26,52 @@ public class CardboardActivity extends Activity
     
     public CardboardActivity() {
         super();
-        this.sensorListener = new SensorListener();
+        sensorListener = new SensorListener();
     }
     
     public void setCardboardView(final CardboardView cardboardView) {
-        this.mCardboardView = cardboardView;
+        mCardboardView = cardboardView;
         if (cardboardView == null) {
             return;
         }
-        final NdefMessage tagContents = this.mNfcSensor.getTagContents();
+        final NdefMessage tagContents = mNfcSensor.getTagContents();
         if (tagContents != null) {
-            this.updateCardboardDeviceParams(CardboardDeviceParams.createFromNfcContents(tagContents));
+            updateCardboardDeviceParams(CardboardDeviceParams.createFromNfcContents(tagContents));
         }
     }
     
     public CardboardView getCardboardView() {
-        return this.mCardboardView;
+        return mCardboardView;
     }
     
     public NfcSensor getNfcSensor() {
-        return this.mNfcSensor;
+        return mNfcSensor;
     }
     
     public void setVolumeKeysMode(final int mode) {
-        this.mVolumeKeysMode = mode;
+        mVolumeKeysMode = mode;
     }
     
     public int getVolumeKeysMode() {
-        return this.mVolumeKeysMode;
+        return mVolumeKeysMode;
     }
     
     public boolean areVolumeKeysDisabled() {
-        switch (this.mVolumeKeysMode) {
-            case 0: {
+        switch (mVolumeKeysMode) {
+            case VolumeKeys.NOT_DISABLED: {
                 return false;
             }
-            case 2: {
+            case VolumeKeys.DISABLED_WHILE_IN_CARDBOARD: {
                 return this.mNfcSensor.isDeviceInCardboard();
             }
-            case 1: {
+            case VolumeKeys.DISABLED: {
                 return true;
             }
             default: {
-                throw new IllegalStateException(new StringBuilder(36).append("Invalid volume keys mode ").append(this.mVolumeKeysMode).toString());
+                throw new IllegalStateException(new StringBuilder()
+                        .append("Invalid volume keys mode ")
+                        .append(mVolumeKeysMode).toString()
+                );
             }
         }
     }
@@ -76,101 +87,119 @@ public class CardboardActivity extends Activity
     }
     
     protected void updateCardboardDeviceParams(final CardboardDeviceParams newParams) {
-        if (this.mCardboardView != null) {
-            this.mCardboardView.updateCardboardDeviceParams(newParams);
+        if (mCardboardView != null) {
+            mCardboardView.updateCardboardDeviceParams(newParams);
         }
     }
-    
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(1);
-        this.getWindow().addFlags(128);
-        (this.mMagnetSensor = new MagnetSensor((Context)this)).setOnCardboardTriggerListener(this.sensorListener);
-        (this.mNfcSensor = NfcSensor.getInstance((Context)this)).addOnCardboardNfcListener(this.sensorListener);
-        this.mNfcSensor.onNfcIntent(this.getIntent());
-        this.setVolumeKeysMode(2);
-        if (Build.VERSION.SDK_INT < 19) {
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.ALPHA_CHANGED);
+
+        mMagnetSensor = new MagnetSensor(this);
+        mMagnetSensor.setOnCardboardTriggerListener(sensorListener);
+        mNfcSensor = NfcSensor.getInstance(this);
+        mNfcSensor.addOnCardboardNfcListener(sensorListener);
+
+        mNfcSensor.onNfcIntent(this.getIntent());
+        setVolumeKeysMode(VolumeKeys.DISABLED_WHILE_IN_CARDBOARD);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             final Handler handler = new Handler();
-            this.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener((View.OnSystemUiVisibilityChangeListener)new View.OnSystemUiVisibilityChangeListener() {
-                public void onSystemUiVisibilityChange(final int visibility) {
-                    if ((visibility & 0x2) == 0x0) {
-                        handler.postDelayed((Runnable)new Runnable() {
-                            @Override
-                            public void run() {
-                                CardboardActivity.this.setFullscreenMode();
+            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
+                    new View.OnSystemUiVisibilityChangeListener() {
+                        @Override
+                        public void onSystemUiVisibilityChange(final int visibility) {
+                            if ((visibility & 0x2) == 0x0) {
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CardboardActivity.this.setFullscreenMode();
+                                    }
+                                }, NAVIGATION_BAR_TIMEOUT_MS);
                             }
-                        }, 2000L);
-                    }
-                }
+                        }
             });
         }
     }
-    
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (this.mCardboardView != null) {
-            this.mCardboardView.onResume();
+        if (mCardboardView != null) {
+            mCardboardView.onResume();
         }
-        this.mMagnetSensor.start();
-        this.mNfcSensor.onResume(this);
+        mMagnetSensor.start();
+        mNfcSensor.onResume(this);
     }
-    
+
+    @Override
     protected void onPause() {
         super.onPause();
-        if (this.mCardboardView != null) {
-            this.mCardboardView.onPause();
+        if (mCardboardView != null) {
+            mCardboardView.onPause();
         }
-        this.mMagnetSensor.stop();
-        this.mNfcSensor.onPause(this);
+        mMagnetSensor.stop();
+        mNfcSensor.onPause(this);
     }
-    
+
+    @Override
     protected void onDestroy() {
-        this.mNfcSensor.removeOnCardboardNfcListener(this.sensorListener);
+        mNfcSensor.removeOnCardboardNfcListener(sensorListener);
         super.onDestroy();
     }
-    
+
+    @Override
     public void setContentView(final View view) {
         if (view instanceof CardboardView) {
-            this.setCardboardView((CardboardView)view);
+            setCardboardView((CardboardView) view);
         }
         super.setContentView(view);
     }
-    
+
+    @Override
     public void setContentView(final View view, final ViewGroup.LayoutParams params) {
         if (view instanceof CardboardView) {
-            this.setCardboardView((CardboardView)view);
+            setCardboardView((CardboardView) view);
         }
         super.setContentView(view, params);
     }
-    
+
+    @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        return ((keyCode == 24 || keyCode == 25) && this.areVolumeKeysDisabled()) || super.onKeyDown(keyCode, event);
+        return ((keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+                && areVolumeKeysDisabled()) || super.onKeyDown(keyCode, event);
     }
-    
+
+    @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-        return ((keyCode == 24 || keyCode == 25) && this.areVolumeKeysDisabled()) || super.onKeyUp(keyCode, event);
+        return ((keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+                && areVolumeKeysDisabled()) || super.onKeyUp(keyCode, event);
     }
-    
+
+    @Override
     public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            this.setFullscreenMode();
+            setFullscreenMode();
         }
     }
     
     private void setFullscreenMode() {
-        this.getWindow().getDecorView().setSystemUiVisibility(5894);
+        getWindow().getDecorView().setSystemUiVisibility(5894);
     }
     
-    public abstract static class VolumeKeys
-    {
+    public abstract static class VolumeKeys {
         public static final int NOT_DISABLED = 0;
         public static final int DISABLED = 1;
         public static final int DISABLED_WHILE_IN_CARDBOARD = 2;
     }
     
-    private class SensorListener implements MagnetSensor.OnCardboardTriggerListener, NfcSensor.OnCardboardNfcListener
-    {
+    private class SensorListener
+            implements MagnetSensor.OnCardboardTriggerListener, NfcSensor.OnCardboardNfcListener{
         @Override
         public void onInsertedIntoCardboard(final CardboardDeviceParams deviceParams) {
             CardboardActivity.this.onInsertedIntoCardboard(deviceParams);
