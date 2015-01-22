@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard;
 
-public class Eye
-{
+public class Eye {
     private final int mType;
     private final float[] mEyeView;
     private final Viewport mViewport;
@@ -54,8 +53,7 @@ public class Eye
         this.mProjectionChanged = true;
     }
     
-    public abstract static class Type
-    {
+    public abstract static class Type {
         public static final int MONOCULAR = 0;
         public static final int LEFT = 1;
         public static final int RIGHT = 2;

@@ -8,8 +8,7 @@ import java.nio.*;
 import android.opengl.*;
 import android.graphics.*;
 
-class UiLayer
-{
+class UiLayer {
     private static final String TAG;
     private static final int NORMAL_COLOR = -3355444;
     private static final int PRESSED_COLOR = -12303292;

@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard.sensors.internal;
 
-public class OrientationEKF
-{
+public class OrientationEKF {
     private static final String TAG = "OrientationEKF";
 
     private static final float NS2S = 1.0E-9f;

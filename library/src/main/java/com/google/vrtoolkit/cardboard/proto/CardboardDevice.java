@@ -3,10 +3,8 @@ package com.google.vrtoolkit.cardboard.proto;
 import java.io.*;
 import com.google.protobuf.nano.*;
 
-public interface CardboardDevice
-{
-    public static final class DeviceParams extends MessageNano
-    {
+public interface CardboardDevice {
+    public static final class DeviceParams extends MessageNano {
         private static volatile DeviceParams[] _emptyArray;
         private int bitField0_;
         private String vendor_;

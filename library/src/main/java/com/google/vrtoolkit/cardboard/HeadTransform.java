@@ -3,8 +3,7 @@ package com.google.vrtoolkit.cardboard;
 import android.opengl.*;
 import android.util.*;
 
-public class HeadTransform
-{
+public class HeadTransform {
     private static final float GIMBAL_LOCK_EPSILON = 0.01f;
     private final float[] mHeadView;
     

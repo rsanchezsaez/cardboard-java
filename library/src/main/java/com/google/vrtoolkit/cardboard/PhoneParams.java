@@ -6,8 +6,7 @@ import android.util.*;
 import com.google.protobuf.nano.*;
 import java.io.*;
 
-public class PhoneParams
-{
+public class PhoneParams {
     private static final String TAG;
     private static final int STREAM_SENTINEL = 779508118;
     

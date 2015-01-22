@@ -12,8 +12,7 @@ import javax.microedition.khronos.opengles.*;
 import android.opengl.*;
 import javax.microedition.khronos.egl.*;
 
-public class CardboardView extends GLSurfaceView
-{
+public class CardboardView extends GLSurfaceView {
     private static final String TAG = "CardboardView";
     private RendererHelper mRendererHelper;
     private HeadTracker mHeadTracker;
@@ -239,8 +238,7 @@ public class CardboardView extends GLSurfaceView
         return this.mUiLayer.onTouchEvent(e) || super.onTouchEvent(e);
     }
     
-    private class RendererHelper implements GLSurfaceView.Renderer
-    {
+    private class RendererHelper implements GLSurfaceView.Renderer {
         private final HeadTransform mHeadTransform;
         private final Eye mMonocular;
         private final Eye mLeftEye;
@@ -639,31 +637,20 @@ public class CardboardView extends GLSurfaceView
         }
     }
     
-    public interface StereoRenderer
-    {
+    public interface StereoRenderer {
         void onNewFrame(HeadTransform p0);
-        
         void onDrawEye(Eye p0);
-        
         void onFinishFrame(Viewport p0);
-        
         void onSurfaceChanged(int p0, int p1);
-        
         void onSurfaceCreated(EGLConfig p0);
-        
         void onRendererShutdown();
     }
     
-    public interface Renderer
-    {
+    public interface Renderer {
         void onDrawFrame(HeadTransform p0, Eye p1, Eye p2);
-        
         void onFinishFrame(Viewport p0);
-        
         void onSurfaceChanged(int p0, int p1);
-        
         void onSurfaceCreated(EGLConfig p0);
-        
         void onRendererShutdown();
     }
 }

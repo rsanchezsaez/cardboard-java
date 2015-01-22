@@ -8,8 +8,7 @@ import android.content.*;
 import android.os.*;
 import android.app.*;
 
-class UiUtils
-{
+class UiUtils {
     private static final String CARDBOARD_WEBSITE = "http://google.com/cardboard/cfg?vrtoolkit_version=0.5.1";
     private static final String CARDBOARD_CONFIGURE_ACTION = "com.google.vrtoolkit.cardboard.CONFIGURE";
     private static final String INTENT_EXTRAS_VERSION_KEY = "VERSION";
@@ -73,16 +72,14 @@ class UiUtils
         dialog.show(fragmentManager, "ConfigureCardboardDialog");
     }
     
-    private static class DialogStrings
-    {
+    private static class DialogStrings {
         String mTitle;
         String mMessage;
         String mPositiveButtonText;
         String mNegativeButtonText;
     }
     
-    private static class InstallDialogStrings extends DialogStrings
-    {
+    private static class InstallDialogStrings extends DialogStrings {
         InstallDialogStrings() {
             super();
             this.mTitle = "Configure";
@@ -92,8 +89,7 @@ class UiUtils
         }
     }
     
-    private static class ConfigureDialogStrings extends DialogStrings
-    {
+    private static class ConfigureDialogStrings extends DialogStrings {
         ConfigureDialogStrings() {
             super();
             this.mTitle = "Configure";
@@ -103,8 +99,7 @@ class UiUtils
         }
     }
     
-    private static class SettingsDialogFragment extends DialogFragment
-    {
+    private static class SettingsDialogFragment extends DialogFragment {
         private DialogStrings mDialogStrings;
         private DialogInterface.OnClickListener mPositiveButtonListener;
         

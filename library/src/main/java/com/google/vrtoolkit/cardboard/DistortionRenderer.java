@@ -4,8 +4,7 @@ import android.opengl.*;
 import android.util.*;
 import java.nio.*;
 
-public class DistortionRenderer
-{
+public class DistortionRenderer {
     private static final String TAG = "DistortionRenderer";
     private int mTextureId;
     private int mRenderbufferId;
@@ -177,7 +176,8 @@ public class DistortionRenderer
         this.mFovsChanged = true;
     }
     
-    public void onFovChanged(final HeadMountedDisplay hmd, final FieldOfView leftFov, final FieldOfView rightFov, final float virtualEyeToScreenDistance) {
+    public void onFovChanged(final HeadMountedDisplay hmd, final FieldOfView leftFov,
+                             final FieldOfView rightFov, final float virtualEyeToScreenDistance) {
         if (this.mDrawingFrame) {
             throw new IllegalStateException("Cannot change FOV while rendering a frame.");
         }
@@ -504,8 +504,7 @@ public class DistortionRenderer
         }
     }
     
-    private class DistortionMesh
-    {
+    private class DistortionMesh {
         private static final String TAG = "DistortionMesh";
         public static final int BYTES_PER_FLOAT = 4;
         public static final int BYTES_PER_SHORT = 2;

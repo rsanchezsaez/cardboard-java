@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard.sensors.internal;
 
-public class Matrix3x3d
-{
+public class Matrix3x3d {
     public double[] m;
     
     public Matrix3x3d() {

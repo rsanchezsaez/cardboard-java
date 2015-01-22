@@ -1,6 +1,5 @@
 package com.google.vrtoolkit.cardboard.sensors;
 
-public interface Clock
-{
+public interface Clock {
     long nanoTime();
 }

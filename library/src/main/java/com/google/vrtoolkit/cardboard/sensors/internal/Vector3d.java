@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard.sensors.internal;
 
-public class Vector3d
-{
+public class Vector3d {
     public double x;
     public double y;
     public double z;

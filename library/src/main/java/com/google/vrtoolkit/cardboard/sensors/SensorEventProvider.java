@@ -2,8 +2,7 @@ package com.google.vrtoolkit.cardboard.sensors;
 
 import android.hardware.*;
 
-public interface SensorEventProvider
-{
+public interface SensorEventProvider {
     void start();
     
     void stop();

@@ -11,8 +11,7 @@ import android.app.*;
 import com.google.vrtoolkit.cardboard.*;
 import java.util.*;
 
-public class NfcSensor
-{
+public class NfcSensor {
     private static final String TAG = "NfcSensor";
     private static final int MAX_CONNECTION_FAILURES = 1;
     private static final long NFC_POLLING_INTERVAL_MS = 250L;

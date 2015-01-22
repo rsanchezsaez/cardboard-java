@@ -5,8 +5,7 @@ import android.util.*;
 import com.google.vrtoolkit.cardboard.proto.*;
 import java.io.*;
 
-public class ScreenParams
-{
+public class ScreenParams {
     private static final float METERS_PER_INCH = 0.0254f;
     private static final float DEFAULT_BORDER_SIZE_METERS = 0.003f;
     private int mWidth;

@@ -8,8 +8,7 @@ import com.google.protobuf.nano.*;
 import java.io.*;
 import android.nfc.*;
 
-public class CardboardDeviceParams
-{
+public class CardboardDeviceParams{
     private static final String TAG = "CardboardDeviceParams";
     private static final String HTTP_SCHEME = "http";
     private static final String URI_HOST_GOOGLE_SHORT = "g.co";

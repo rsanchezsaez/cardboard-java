@@ -7,8 +7,7 @@ import android.opengl.*;
 import android.hardware.*;
 import java.util.concurrent.*;
 
-public class HeadTracker implements SensorEventListener
-{
+public class HeadTracker implements SensorEventListener {
     private static final float DEFAULT_NECK_HORIZONTAL_OFFSET = 0.08f;
     private static final float DEFAULT_NECK_VERTICAL_OFFSET = 0.075f;
     private static final boolean DEFAULT_NECK_MODEL_ENABLED = false;

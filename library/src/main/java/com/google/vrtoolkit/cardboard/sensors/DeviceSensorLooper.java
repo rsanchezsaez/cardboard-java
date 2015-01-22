@@ -4,8 +4,7 @@ import java.util.*;
 import android.hardware.*;
 import android.os.*;
 
-public class DeviceSensorLooper implements SensorEventProvider
-{
+public class DeviceSensorLooper implements SensorEventProvider {
     private boolean mIsRunning;
     private SensorManager mSensorManager;
     private Looper mSensorLooper;

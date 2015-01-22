@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard;
 
-public class HeadMountedDisplay
-{
+public class HeadMountedDisplay {
     private ScreenParams mScreen;
     private CardboardDeviceParams mCardboardDevice;
     

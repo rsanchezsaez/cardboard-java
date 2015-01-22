@@ -3,10 +3,8 @@ package com.google.vrtoolkit.cardboard.proto;
 import java.io.*;
 import com.google.protobuf.nano.*;
 
-public interface Phone
-{
-    public static final class PhoneParams extends MessageNano
-    {
+public interface Phone {
+    public static final class PhoneParams extends MessageNano {
         private static volatile PhoneParams[] _emptyArray;
         private int bitField0_;
         private float xPpi_;

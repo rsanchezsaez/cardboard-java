@@ -2,8 +2,7 @@ package com.google.vrtoolkit.cardboard;
 
 import java.util.*;
 
-public class Distortion
-{
+public class Distortion {
     private static final float[] DEFAULT_COEFFICIENTS;
     private float[] mCoefficients;
     
@@ -79,7 +78,9 @@ public class Distortion
         }
         final double[][] matInvATA = new double[numCoefficients][numCoefficients];
         if (numCoefficients != 2) {
-            throw new RuntimeException(new StringBuilder(78).append("solveLeastSquares: only 2 coefficients currently supported, ").append(numCoefficients).append(" given.").toString());
+            throw new RuntimeException(new StringBuilder()
+                    .append("solveLeastSquares: only 2 coefficients currently supported, ")
+                    .append(numCoefficients).append(" given.").toString());
         }
         final double det = matATA[0][0] * matATA[1][1] - matATA[0][1] * matATA[1][0];
         matInvATA[0][0] = matATA[1][1] / det;

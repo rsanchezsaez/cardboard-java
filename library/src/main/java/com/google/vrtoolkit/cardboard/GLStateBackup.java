@@ -4,8 +4,7 @@ import java.nio.*;
 import android.opengl.*;
 import java.util.*;
 
-class GLStateBackup
-{
+class GLStateBackup {
     private boolean mCullFaceEnabled;
     private boolean mScissorTestEnabled;
     private boolean mDepthTestEnabled;

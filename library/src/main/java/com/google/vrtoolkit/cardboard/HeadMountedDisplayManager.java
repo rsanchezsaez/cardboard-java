@@ -5,8 +5,7 @@ import android.util.*;
 import android.view.*;
 import java.io.*;
 
-public class HeadMountedDisplayManager
-{
+public class HeadMountedDisplayManager {
     private static final String TAG = "HeadMountedDisplayManager";
     private final HeadMountedDisplay mHmd;
     private final Context mContext;

@@ -5,8 +5,7 @@ import android.os.*;
 import android.hardware.*;
 import java.util.*;
 
-public class MagnetSensor
-{
+public class MagnetSensor {
     private static final String HTC_ONE_MODEL = "HTC One";
     private TriggerDetector mDetector;
     private Thread mDetectorThread;

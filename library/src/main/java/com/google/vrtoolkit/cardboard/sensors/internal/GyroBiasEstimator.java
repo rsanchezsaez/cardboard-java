@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard.sensors.internal;
 
-public class GyroBiasEstimator
-{
+public class GyroBiasEstimator {
     private static final float GYRO_SMOOTHING_FACTOR = 0.01f;
     private static final float ACC_SMOOTHING_FACTOR = 0.1f;
     private static final Vector3d UP_VECTOR;

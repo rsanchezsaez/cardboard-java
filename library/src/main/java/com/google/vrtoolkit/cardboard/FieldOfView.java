@@ -2,8 +2,7 @@ package com.google.vrtoolkit.cardboard;
 
 import android.opengl.*;
 
-public class FieldOfView
-{
+public class FieldOfView {
     private static final float DEFAULT_MAX_FOV_LEFT_RIGHT = 40.0f;
     private static final float DEFAULT_MAX_FOV_BOTTOM = 40.0f;
     private static final float DEFAULT_MAX_FOV_TOP = 40.0f;

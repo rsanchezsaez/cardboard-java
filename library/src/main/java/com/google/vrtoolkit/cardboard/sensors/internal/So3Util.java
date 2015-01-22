@@ -1,7 +1,6 @@
 package com.google.vrtoolkit.cardboard.sensors.internal;
 
-public class So3Util
-{
+public class So3Util {
     private static final double M_SQRT1_2 = 0.7071067811865476;
     private static final double ONE_6TH = 0.1666666716337204;
     private static final double ONE_20TH = 0.1666666716337204;

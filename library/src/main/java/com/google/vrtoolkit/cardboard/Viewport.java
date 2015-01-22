@@ -2,8 +2,7 @@ package com.google.vrtoolkit.cardboard;
 
 import android.opengl.*;
 
-public class Viewport
-{
+public class Viewport {
     public int x;
     public int y;
     public int width;
