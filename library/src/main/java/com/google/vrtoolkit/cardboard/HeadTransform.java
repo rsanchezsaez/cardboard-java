@@ -61,7 +61,7 @@ public class HeadTransform {
         float y;
         float z;
         if (t >= 0.0f) {
-            float s = FloatMath.sqrt(t + 1.0f);
+            float s = (float) Math.sqrt(t + 1.0f);
             w = 0.5f * s;
             s = 0.5f / s;
             x = (m[9] - m[6]) * s;
@@ -69,7 +69,7 @@ public class HeadTransform {
             z = (m[4] - m[1]) * s;
         }
         else if (m[0] > m[5] && m[0] > m[10]) {
-            float s = FloatMath.sqrt(1.0f + m[0] - m[5] - m[10]);
+            float s = (float) Math.sqrt(1.0f + m[0] - m[5] - m[10]);
             x = s * 0.5f;
             s = 0.5f / s;
             y = (m[4] + m[1]) * s;
@@ -77,7 +77,7 @@ public class HeadTransform {
             w = (m[9] - m[6]) * s;
         }
         else if (m[5] > m[10]) {
-            float s = FloatMath.sqrt(1.0f + m[5] - m[0] - m[10]);
+            float s = (float) Math.sqrt(1.0f + m[5] - m[0] - m[10]);
             y = s * 0.5f;
             s = 0.5f / s;
             x = (m[4] + m[1]) * s;
@@ -85,7 +85,7 @@ public class HeadTransform {
             w = (m[2] - m[8]) * s;
         }
         else {
-            float s = FloatMath.sqrt(1.0f + m[10] - m[0] - m[5]);
+            float s = (float) Math.sqrt(1.0f + m[10] - m[0] - m[5]);
             z = s * 0.5f;
             s = 0.5f / s;
             x = (m[2] + m[8]) * s;
@@ -105,7 +105,7 @@ public class HeadTransform {
         final float pitch = (float)Math.asin(this.mHeadView[6]);
         float yaw;
         float roll;
-        if (FloatMath.sqrt(1.0f - this.mHeadView[6] * this.mHeadView[6]) >= GIMBAL_LOCK_EPSILON) {
+        if ((float) Math.sqrt(1.0f - this.mHeadView[6] * this.mHeadView[6]) >= GIMBAL_LOCK_EPSILON) {
             yaw = (float)Math.atan2(-this.mHeadView[2], this.mHeadView[10]);
             roll = (float)Math.atan2(-this.mHeadView[4], this.mHeadView[5]);
         }
